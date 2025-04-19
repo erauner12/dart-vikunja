@@ -1,0 +1,16 @@
+name: vikunja_flutter_api
+description: Auto-generated Dart client library for the Vikunja API.
+version: 0.1.0
+# repository: https://github.com/erauner12/dart-vikunja # Optional: Add repository URL
+
+environment:
+  sdk: '>=2.18.0 <4.0.0'
+
+dependencies:
+  http: ^1.0.0 # Or match the version used in your main project
+  collection: ^1.17.0 # Common dependency for deep equality checks etc.
+  # meta: ^1.8.0 # Include if @immutable or other meta annotations are used extensively
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
