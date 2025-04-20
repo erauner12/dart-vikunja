@@ -10,7 +10,6 @@
 
 part of openapi.api;
 
-
 class TaskApi {
   TaskApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
@@ -47,7 +46,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -78,12 +76,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }
@@ -116,7 +113,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -144,15 +140,22 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<Map<String, List<UserUser>>>') as List)
-        .cast<Map>()
-        .toList(growable: false);
-
+      // Deserialize to List<dynamic> first
+      final dynamicList =
+          await apiClient.deserializeAsync(responseBody, 'List') as List;
+      // Manually map to the correct nested type
+      return dynamicList.map((item) {
+        if (item is Map) {
+          // Use mapListFromJson helper which expects Map<String, dynamic>
+          // where the dynamic value is a list that listFromJson can handle.
+          return UserUser.mapListFromJson(item.cast<String, dynamic>());
+        } else {
+          throw ApiException(
+              0, 'Unexpected item type in reactions list: ${item.runtimeType}');
+        }
+      }).toList(growable: false);
     }
     return null;
   }
@@ -188,7 +191,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'PUT',
@@ -219,12 +221,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsReaction',) as ModelsReaction;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsReaction',
+      ) as ModelsReaction;
     }
     return null;
   }
@@ -256,7 +257,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'PUT',
@@ -284,12 +284,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTask',) as ModelsTask;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTask',
+      ) as ModelsTask;
     }
     return null;
   }
@@ -377,7 +376,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -432,15 +430,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
       return (await apiClient.deserializeAsync(responseBody, 'List<ModelsTask>') as List)
         .cast<ModelsTask>()
-        .toList(growable: false);
-
+          .toList(growable: false);
     }
     return null;
   }
@@ -480,7 +474,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -514,12 +507,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskBucket',) as ModelsTaskBucket;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskBucket',
+      ) as ModelsTaskBucket;
     }
     return null;
   }
@@ -599,7 +591,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -648,15 +639,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
       return (await apiClient.deserializeAsync(responseBody, 'List<ModelsTask>') as List)
         .cast<ModelsTask>()
-        .toList(growable: false);
-
+          .toList(growable: false);
     }
     return null;
   }
@@ -684,7 +671,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -709,12 +695,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTask',) as ModelsTask;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTask',
+      ) as ModelsTask;
     }
     return null;
   }
@@ -747,7 +732,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'DELETE',
@@ -775,12 +759,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }
@@ -820,7 +803,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -851,12 +833,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MultipartFile',) as MultipartFile;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'MultipartFile',
+      ) as MultipartFile;
     }
     return null;
   }
@@ -898,7 +879,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -929,15 +909,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
       return (await apiClient.deserializeAsync(responseBody, 'List<ModelsTaskAttachment>') as List)
         .cast<ModelsTaskAttachment>()
-        .toList(growable: false);
-
+          .toList(growable: false);
     }
     return null;
   }
@@ -1006,12 +982,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }
@@ -1040,7 +1015,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'DELETE',
@@ -1065,12 +1039,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }
@@ -1099,7 +1072,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -1124,12 +1096,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTask',) as ModelsTask;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTask',
+      ) as ModelsTask;
     }
     return null;
   }
@@ -1161,7 +1132,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -1189,12 +1159,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskPosition',) as ModelsTaskPosition;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskPosition',
+      ) as ModelsTaskPosition;
     }
     return null;
   }
@@ -1226,7 +1195,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -1254,12 +1222,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTask',) as ModelsTask;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTask',
+      ) as ModelsTask;
     }
     return null;
   }
@@ -1292,7 +1259,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'DELETE',
@@ -1320,12 +1286,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }
@@ -1358,7 +1323,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -1386,12 +1350,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskComment',) as ModelsTaskComment;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskComment',
+      ) as ModelsTaskComment;
     }
     return null;
   }
@@ -1424,7 +1387,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'POST',
@@ -1452,12 +1414,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskComment',) as ModelsTaskComment;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskComment',
+      ) as ModelsTaskComment;
     }
     return null;
   }
@@ -1486,7 +1447,6 @@ class TaskApi {
 
     const contentTypes = <String>[];
 
-
     return apiClient.invokeAPI(
       path,
       'GET',
@@ -1511,15 +1471,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
       return (await apiClient.deserializeAsync(responseBody, 'List<ModelsTaskComment>') as List)
         .cast<ModelsTaskComment>()
-        .toList(growable: false);
-
+          .toList(growable: false);
     }
     return null;
   }
@@ -1551,7 +1507,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'PUT',
@@ -1579,12 +1534,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskComment',) as ModelsTaskComment;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskComment',
+      ) as ModelsTaskComment;
     }
     return null;
   }
@@ -1616,7 +1570,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'PUT',
@@ -1644,12 +1597,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsTaskRelation',) as ModelsTaskRelation;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsTaskRelation',
+      ) as ModelsTaskRelation;
     }
     return null;
   }
@@ -1687,7 +1639,6 @@ class TaskApi {
 
     const contentTypes = <String>['application/json'];
 
-
     return apiClient.invokeAPI(
       path,
       'DELETE',
@@ -1719,12 +1670,11 @@ class TaskApi {
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+      return await apiClient.deserializeAsync(
+        await _decodeBodyBytes(response),
+        'ModelsMessage',
+      ) as ModelsMessage;
     }
     return null;
   }

@@ -59,10 +59,20 @@ class ApiApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       final responseBody = await _decodeBodyBytes(response);
-      return (await apiClient.deserializeAsync(responseBody, 'List<Map<String, ModelsRouteDetail>>') as List)
-        .cast<Map>()
-        .toList(growable: false);
-
+      // Deserialize to List<dynamic> first
+      final dynamicList =
+          await apiClient.deserializeAsync(responseBody, 'List') as List;
+      // Manually map to the correct nested type
+      return dynamicList.map((item) {
+        if (item is Map) {
+          // Use mapFromJson helper which expects Map<String, dynamic>
+          return ModelsRouteDetail.mapFromJson(item.cast<String, dynamic>());
+        } else {
+          // Handle unexpected item type if necessary
+          throw ApiException(
+              0, 'Unexpected item type in routes list: ${item.runtimeType}');
+        }
+      }).toList(growable: false);
     }
     return null;
   }
@@ -203,7 +213,7 @@ class ApiApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsAPIToken',) as ModelsAPIToken;
-    
+
     }
     return null;
   }
@@ -262,7 +272,7 @@ class ApiApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ModelsMessage',) as ModelsMessage;
-    
+
     }
     return null;
   }

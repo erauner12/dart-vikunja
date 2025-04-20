@@ -14,14 +14,15 @@ class ModelsAPIToken {
   /// Returns a new [ModelsAPIToken] instance.
   ModelsAPIToken({
     this.created,
-    this.expiresAt,
+    this.expires,
     this.id,
-    this.permissions,
-    this.title,
+    this.name,
+    this.scopes = const [],
     this.token,
+    this.updated,
+    this.userId,
   });
 
-  /// A timestamp when this api key was created. You cannot change this value.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
@@ -30,16 +31,14 @@ class ModelsAPIToken {
   ///
   String? created;
 
-  /// The date when this key expires.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  String? expiresAt;
+  String? expires;
 
-  /// The unique, numeric id of this api key.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
@@ -48,25 +47,18 @@ class ModelsAPIToken {
   ///
   int? id;
 
-  /// The permissions this token has. Possible values are available via the /routes endpoint and consist of the keys of the list from that endpoint. For example, if the token should be able to read all tasks as well as update existing tasks, you should add `{\"tasks\":[\"read_all\",\"update\"]}`.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  Map<String, List<String>>? permissions;
+  String? name;
 
-  /// A human-readable name for this token
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? title;
+  /// A list of scopes this token has access to.
+  List<String> scopes;
 
-  /// The actual api key. Only visible after creation.
+  /// The token itself. Only returned when creating a new token.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
@@ -75,27 +67,48 @@ class ModelsAPIToken {
   ///
   String? token;
 
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? updated;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  int? userId;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is ModelsAPIToken &&
     other.created == created &&
-    other.expiresAt == expiresAt &&
+          other.expires == expires &&
     other.id == id &&
-    _deepEquality.equals(other.permissions, permissions) &&
-    other.title == title &&
-    other.token == token;
+          other.name == name &&
+          _deepEquality.equals(other.scopes, scopes) &&
+          other.token == token &&
+          other.updated == updated &&
+          other.userId == userId;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (created == null ? 0 : created!.hashCode) +
-    (expiresAt == null ? 0 : expiresAt!.hashCode) +
+      (expires == null ? 0 : expires!.hashCode) +
     (id == null ? 0 : id!.hashCode) +
-    (permissions == null ? 0 : permissions!.hashCode) +
-    (title == null ? 0 : title!.hashCode) +
-    (token == null ? 0 : token!.hashCode);
+      (name == null ? 0 : name!.hashCode) +
+      (scopes.hashCode) +
+      (token == null ? 0 : token!.hashCode) +
+      (updated == null ? 0 : updated!.hashCode) +
+      (userId == null ? 0 : userId!.hashCode);
 
   @override
-  String toString() => 'ModelsAPIToken[created=$created, expiresAt=$expiresAt, id=$id, permissions=$permissions, title=$title, token=$token]';
+  String toString() =>
+      'ModelsAPIToken[created=$created, expires=$expires, id=$id, name=$name, scopes=$scopes, token=$token, updated=$updated, userId=$userId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -104,30 +117,36 @@ class ModelsAPIToken {
     } else {
       json[r'created'] = null;
     }
-    if (this.expiresAt != null) {
-      json[r'expires_at'] = this.expiresAt;
+    if (this.expires != null) {
+      json[r'expires'] = this.expires;
     } else {
-      json[r'expires_at'] = null;
+      json[r'expires'] = null;
     }
     if (this.id != null) {
       json[r'id'] = this.id;
     } else {
       json[r'id'] = null;
     }
-    if (this.permissions != null) {
-      json[r'permissions'] = this.permissions;
+    if (this.name != null) {
+      json[r'name'] = this.name;
     } else {
-      json[r'permissions'] = null;
+      json[r'name'] = null;
     }
-    if (this.title != null) {
-      json[r'title'] = this.title;
-    } else {
-      json[r'title'] = null;
-    }
+    json[r'scopes'] = this.scopes;
     if (this.token != null) {
       json[r'token'] = this.token;
     } else {
       json[r'token'] = null;
+    }
+    if (this.updated != null) {
+      json[r'updated'] = this.updated;
+    } else {
+      json[r'updated'] = null;
+    }
+    if (this.userId != null) {
+      json[r'user_id'] = this.userId;
+    } else {
+      json[r'user_id'] = null;
     }
     return json;
   }
@@ -152,13 +171,16 @@ class ModelsAPIToken {
 
       return ModelsAPIToken(
         created: mapValueOfType<String>(json, r'created'),
-        expiresAt: mapValueOfType<String>(json, r'expires_at'),
+        expires: mapValueOfType<String>(json, r'expires'),
         id: mapValueOfType<int>(json, r'id'),
-        permissions: json[r'permissions'] == null
-          ? null
-            : mapCastOfType<String, List>(json, r'permissions'),
-        title: mapValueOfType<String>(json, r'title'),
+        name: mapValueOfType<String>(json, r'name'),
+        // Explicitly parse the list of strings for scopes, converting elements
+        scopes: json[r'scopes'] == null
+            ? const []
+            : (json[r'scopes'] as List).map((e) => e.toString()).toList(),
         token: mapValueOfType<String>(json, r'token'),
+        updated: mapValueOfType<String>(json, r'updated'),
+        userId: mapValueOfType<int>(json, r'user_id'),
       );
     }
     return null;
@@ -208,4 +230,3 @@ class ModelsAPIToken {
   static const requiredKeys = <String>{
   };
 }
-
